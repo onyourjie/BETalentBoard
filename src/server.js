@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.js';
 
 // Import routes
 import authRoutes from './routes/auth.route.js';
@@ -32,10 +34,65 @@ app.use(cookieParser());
 // Static files untuk avatar
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  explorer: true,
+  customCss: `
+    .swagger-ui .topbar { display: none }
+    .swagger-ui .info { margin: 20px 0 }
+    .swagger-ui .info h1 { color: #2e7d2e }
+  `,
+  customSiteTitle: 'BETalentBoard API Documentation',
+  customfavIcon: '/favicon.ico',
+  swaggerOptions: {
+    persistAuthorization: true,
+    docExpansion: 'none',
+    filter: true,
+    showRequestHeaders: true
+  }
+}));
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: API Health Check
+ *     description: Returns API status and available endpoints
+ *     tags: [Health Check]
+ *     responses:
+ *       200:
+ *         description: API is running successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "BETalentBoard API is running!"
+ *                 version:
+ *                   type: string
+ *                   example: "1.0.0"
+ *                 endpoints:
+ *                   type: object
+ *                   properties:
+ *                     auth:
+ *                       type: string
+ *                       example: "/api/auth"
+ *                     users:
+ *                       type: string
+ *                       example: "/api/users"
+ *                     docs:
+ *                       type: string
+ *                       example: "/api-docs"
+ */
 // Health check route
 app.get('/', (req, res) => {
   res.json({
@@ -44,7 +101,8 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth',
-      users: '/api/users'
+      users: '/api/users',
+      docs: '/api-docs'
     }
   });
 });
@@ -85,6 +143,7 @@ app.use((error, req, res, next) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
