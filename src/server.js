@@ -59,6 +59,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/jobs', jobRoutes);
 
 /**
  * @swagger
@@ -106,6 +107,7 @@ app.get('/', (req, res) => {
     endpoints: {
       auth: '/api/auth',
       users: '/api/users',
+      jobs: '/api/jobs',
       docs: '/api-docs'
     }
   });
@@ -143,6 +145,24 @@ app.use((error, req, res, next) => {
     message: 'Internal server error',
     ...(process.env.NODE_ENV === 'development' && { error: error.message })
   });
+});
+
+// Connect to Redis
+connectRedis().catch(err => {
+  console.warn('Redis connection failed, continuing without Redis:', err.message);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', async () => {
+  console.log('SIGTERM received, shutting down gracefully...');
+  await disconnectRedis();
+  process.exit(0);
+});
+
+process.on('SIGINT', async () => {
+  console.log('SIGINT received, shutting down gracefully...');
+  await disconnectRedis();
+  process.exit(0);
 });
 
 // Start server

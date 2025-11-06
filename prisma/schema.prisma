@@ -27,13 +27,88 @@ model User {
   // Untuk refresh token
   refreshToken String?
   
+  // Relations
+  jobs          Job[]             @relation("JobOwner")
+  applications  JobApplication[]  @relation("Applicant")
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("users")
 }
 
+model Job {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  company     String
+  location    String?
+  jobType     JobType  @default(FULL_TIME)
+  salary      String?
+  requirements String?  @db.Text
+  skills      String[] // Array of required skills
+  status      JobStatus @default(OPEN)
+  
+  // Relations
+  ownerId     String
+  owner       User              @relation("JobOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  applications JobApplication[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@index([ownerId])
+  @@map("jobs")
+}
+
+model JobApplication {
+  id          String              @id @default(cuid())
+  
+  // Relations
+  jobId       String
+  job         Job                 @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  
+  applicantId String
+  applicant   User                @relation("Applicant", fields: [applicantId], references: [id], onDelete: Cascade)
+  
+  // Application details
+  coverLetter String?             @db.Text
+  resume      String?             // URL to resume file
+  status      ApplicationStatus   @default(PENDING)
+  
+  appliedAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@unique([jobId, applicantId]) // Satu user hanya bisa apply sekali per job
+  @@index([jobId])
+  @@index([applicantId])
+  @@map("job_applications")
+}
+
 enum Role {
   USER
   ADMIN
+  RECRUITER
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+  FREELANCE
+}
+
+enum JobStatus {
+  OPEN
+  CLOSED
+  DRAFT
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  ACCEPTED
+  REJECTED
 }
