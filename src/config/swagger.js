@@ -15,6 +15,32 @@ const swaggerDefinition = {
       url: 'https://opensource.org/licenses/MIT'
     }
   },
+  tags: [
+    {
+      name: 'Health Check',
+      description: 'API health and status endpoints'
+    },
+    {
+      name: 'Authentication',
+      description: 'User authentication and authorization endpoints'
+    },
+    {
+      name: 'User Profile',
+      description: 'User profile management endpoints'
+    },
+    {
+      name: 'User Management',
+      description: 'Admin user management endpoints'
+    },
+    {
+      name: 'Jobs',
+      description: 'Job posting and browsing endpoints'
+    },
+    {
+      name: 'Job Applications',
+      description: 'Job application management endpoints'
+    }
+  ],
   servers: [
     {
       url: 'https://betalentboard-production-f63e.up.railway.app',
@@ -175,6 +201,132 @@ const swaggerDefinition = {
           },
         },
         required: ['success', 'message'],
+      },
+      Job: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            description: 'Job unique identifier',
+            example: 'clxyz123abc'
+          },
+          title: {
+            type: 'string',
+            description: 'Job title',
+            example: 'Senior Frontend Developer'
+          },
+          description: {
+            type: 'string',
+            description: 'Job description',
+            example: 'We are looking for a talented frontend developer...'
+          },
+          company: {
+            type: 'string',
+            description: 'Company name',
+            example: 'Tech Corp'
+          },
+          location: {
+            type: 'string',
+            nullable: true,
+            description: 'Job location',
+            example: 'Jakarta, Indonesia'
+          },
+          jobType: {
+            type: 'string',
+            enum: ['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE'],
+            description: 'Type of employment',
+            example: 'FULL_TIME'
+          },
+          salary: {
+            type: 'string',
+            nullable: true,
+            description: 'Salary range',
+            example: 'Rp 10.000.000 - 15.000.000'
+          },
+          requirements: {
+            type: 'string',
+            nullable: true,
+            description: 'Job requirements',
+            example: 'Bachelor degree in Computer Science'
+          },
+          skills: {
+            type: 'array',
+            items: {
+              type: 'string'
+            },
+            description: 'Required skills',
+            example: ['React', 'TypeScript', 'Next.js']
+          },
+          status: {
+            type: 'string',
+            enum: ['OPEN', 'CLOSED', 'DRAFT'],
+            description: 'Job status',
+            example: 'OPEN'
+          },
+          ownerId: {
+            type: 'string',
+            description: 'Job owner/recruiter ID',
+            example: 'cluser123'
+          },
+          createdAt: {
+            type: 'string',
+            format: 'date-time',
+            example: '2025-11-01T15:11:00.448Z'
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'date-time',
+            example: '2025-11-01T15:32:18.934Z'
+          }
+        }
+      },
+      JobApplication: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            description: 'Application ID',
+            example: 'clapp123'
+          },
+          jobId: {
+            type: 'string',
+            description: 'Job ID',
+            example: 'cljob123'
+          },
+          applicantId: {
+            type: 'string',
+            description: 'Applicant user ID',
+            example: 'cluser123'
+          },
+          coverLetter: {
+            type: 'string',
+            nullable: true,
+            description: 'Cover letter',
+            example: 'I am very interested in this position...'
+          },
+          resume: {
+            type: 'string',
+            nullable: true,
+            description: 'Resume URL',
+            example: 'https://example.com/resume.pdf'
+          },
+          status: {
+            type: 'string',
+            enum: ['PENDING', 'REVIEWED', 'ACCEPTED', 'REJECTED'],
+            description: 'Application status',
+            example: 'PENDING'
+          },
+          appliedAt: {
+            type: 'string',
+            format: 'date-time',
+            example: '2025-11-02T10:30:00.000Z'
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'date-time',
+            example: '2025-11-02T10:30:00.000Z'
+          }
+        }
       },
       PaginationResponse: {
         type: 'object',
