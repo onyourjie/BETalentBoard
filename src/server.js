@@ -7,9 +7,13 @@ import { fileURLToPath } from 'url';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 
+// Import Redis
+import { connectRedis, disconnectRedis } from './config/redis.js';
+
 // Import routes
 import authRoutes from './routes/auth.route.js';
 import userRoutes from './routes/user.route.js';
+import jobRoutes from './routes/job.route.js';
 
 // Load .env
 dotenv.config();
