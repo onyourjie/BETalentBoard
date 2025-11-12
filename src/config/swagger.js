@@ -87,7 +87,7 @@ const swaggerDefinition = {
           },
           role: {
             type: 'string',
-            enum: ['USER', 'ADMIN'],
+            enum: ['USER', 'ADMIN', 'RECRUITER'],
             description: 'User role',
             example: 'USER'
           },
@@ -101,6 +101,44 @@ const swaggerDefinition = {
             nullable: true,
             description: 'User avatar URL',
             example: '/uploads/avatars/avatar.jpg'
+          },
+          bio: {
+            type: 'string',
+            nullable: true,
+            description: 'User biography',
+            example: 'Full-stack developer with passion for innovation'
+          },
+          location: {
+            type: 'string',
+            nullable: true,
+            description: 'User location',
+            example: 'Jakarta, Indonesia'
+          },
+          skills: {
+            type: 'array',
+            items: {
+              type: 'string'
+            },
+            description: 'User skills',
+            example: ['JavaScript', 'Node.js', 'React', 'PostgreSQL']
+          },
+          experience: {
+            type: 'string',
+            nullable: true,
+            description: 'User work experience',
+            example: '5 years in software development'
+          },
+          education: {
+            type: 'string',
+            nullable: true,
+            description: 'User education background',
+            example: 'Computer Science, University XYZ'
+          },
+          resume: {
+            type: 'string',
+            nullable: true,
+            description: 'URL to user resume file',
+            example: 'https://example.com/resume.pdf'
           },
           createdAt: {
             type: 'string',

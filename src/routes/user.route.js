@@ -94,6 +94,10 @@ router.get('/me', authenticate, getMyProfile);
  *                 type: string
  *                 description: User education background
  *                 example: Computer Science, University XYZ
+ *               resume:
+ *                 type: string
+ *                 description: URL to user resume file
+ *                 example: https://example.com/resume.pdf
  *     responses:
  *       200:
  *         description: Profile updated successfully
