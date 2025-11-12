@@ -5,6 +5,7 @@ import {
   updateUser,
   deleteUser,
   getMyProfile,
+  updateMyProfile,
   changeMyPassword,
   updateMyAvatar,
   upload
@@ -46,6 +47,83 @@ const router = express.Router();
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get('/me', authenticate, getMyProfile);
+
+/**
+ * @swagger
+ * /api/users/me:
+ *   put:
+ *     summary: Update current user profile
+ *     description: Update the profile information of the currently authenticated user
+ *     tags: [User Profile]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: User full name
+ *                 example: John Doe Updated
+ *               username:
+ *                 type: string
+ *                 description: User username
+ *                 example: johndoe_new
+ *               bio:
+ *                 type: string
+ *                 description: User biography
+ *                 example: Full-stack developer with 5 years experience
+ *               location:
+ *                 type: string
+ *                 description: User location
+ *                 example: Jakarta, Indonesia
+ *               skills:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: User skills
+ *                 example: ["JavaScript", "Node.js", "React", "PostgreSQL"]
+ *               experience:
+ *                 type: string
+ *                 description: User work experience
+ *                 example: 5 years in software development
+ *               education:
+ *                 type: string
+ *                 description: User education background
+ *                 example: Computer Science, University XYZ
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Profile updated successfully"
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request - username already taken
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.put('/me', authenticate, updateMyProfile);
 
 /**
  * @swagger

@@ -20,6 +20,14 @@ model User {
   role      Role     @default(USER)
   isActive  Boolean  @default(true)
   
+  // Profile fields
+  bio         String?
+  location    String?
+  skills      String[] // Array of user skills
+  experience  String?  @db.Text // User work experience
+  education   String?  @db.Text // User education background
+  resume      String?  // URL to resume file
+  
   // Untuk reset password
   resetToken String?
   resetTokenExpiry DateTime?

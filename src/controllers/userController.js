@@ -311,6 +311,73 @@ export const changeMyPassword = async (req, res) => {
   }
 };
 
+/**
+ * PUT /users/me
+ * Update profil sendiri
+ */
+export const updateMyProfile = async (req, res) => {
+  try {
+    const { name, username, bio, location, skills, experience, education, resume } = req.body;
+    
+    // Prepare update data
+    const updateData = {};
+    
+    if (name !== undefined) updateData.name = name;
+    if (username !== undefined) updateData.username = username;
+    if (bio !== undefined) updateData.bio = bio;
+    if (location !== undefined) updateData.location = location;
+    if (skills !== undefined) updateData.skills = Array.isArray(skills) ? skills : [];
+    if (experience !== undefined) updateData.experience = experience;
+    if (education !== undefined) updateData.education = education;
+    if (resume !== undefined) updateData.resume = resume;
+
+    // Cek apakah username sudah dipakai user lain (jika username diubah)
+    if (username) {
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          AND: [
+            { id: { not: req.user.id } },
+            { username }
+          ]
+        }
+      });
+
+      if (existingUser) {
+        return errorResponse(res, 'Username already taken', 400);
+      }
+    }
+
+    // Update user profile
+    const updatedUser = await prisma.user.update({
+      where: { id: req.user.id },
+      data: updateData,
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        name: true,
+        avatar: true,
+        bio: true,
+        location: true,
+        skills: true,
+        experience: true,
+        education: true,
+        resume: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+      }
+    });
+
+    return successResponse(res, updatedUser, 'Profile updated successfully');
+
+  } catch (error) {
+    console.error('Update profile error:', error);
+    return errorResponse(res, 'Failed to update profile', 500);
+  }
+};
+
 // Setup multer untuk upload avatar
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
